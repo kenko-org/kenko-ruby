@@ -26,6 +26,12 @@ RSpec.describe Kenko::Container do
       expect(container.keys).to eq [:test]
     end
 
+    context 'when name is different type' do
+      before { container.register('symbol') { 123 } }
+
+      it { expect(container.keys).to eq [:test, :symbol] }
+    end
+
     context 'when user try to register existed check' do
       it {
         expect {
@@ -41,6 +47,13 @@ RSpec.describe Kenko::Container do
     it 'resolves registered check' do
       container.register(:test) { 123 }
       expect(subject).to eq 123
+    end
+
+    context 'when name is different type' do
+      it 'resolves registered check' do
+        container.register('test') { 123 }
+        expect(subject).to eq 123
+      end
     end
 
     context 'when user try to register existed check' do
