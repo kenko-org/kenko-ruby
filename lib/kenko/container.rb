@@ -1,6 +1,7 @@
 module Kenko
   class Container
     # TODO: use mutex here
+    #       options: description for specific check
     def self.register(check_name, &block)
       if key(check_name)
         raise Error, "There is already an item registered with the key #{check_name.inspect}"

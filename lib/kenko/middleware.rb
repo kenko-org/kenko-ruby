@@ -10,17 +10,16 @@ module Kenko
       end
     end
 
-    attr_reader :container, :checks, :options
+    attr_reader :container, :checks, :options, :health_checl_path_regexp
 
-    # TODO: allow to setup specific endpoint for health check
-    def initialize(app, container: Kenko::Container, checks: :all, **options)
+    def initialize(app, path: '/health', container: Kenko::Container, checks: :all, **options)
       @container = container
       @checks = checks
       @options = options
       @app = app
+      @health_checl_path_regexp = %r/\A#{path}\z/
     end
 
-    HEALTH_CHECL_PATH_REGEXP = %r{\A/health\z}
 
     def call(env)
       req = Rack::Request.new(env)
@@ -39,7 +38,7 @@ module Kenko
     end
 
     def health_check_path?(req)
-      req.path =~ HEALTH_CHECL_PATH_REGEXP
+      req.path =~ health_checl_path_regexp
     end
   end
 end
