@@ -14,7 +14,6 @@ module Kenko
       @health_check_path_regexp = %r/\A#{path}(?<json>.json)?\z/
     end
 
-
     def call(env)
       req = Rack::Request.new(env)
       status, headers, response = @app.call(env)
