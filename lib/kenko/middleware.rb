@@ -20,10 +20,10 @@ module Kenko
       status, headers, response = @app.call(env)
       headers = Rack::Utils::HeaderHash.new(headers)
 
-      # TODO: move it to DI
       check_statueses = checker.call(checks: checks)
 
       if path = health_check_path?(req)
+        status = check_statueses.all? { |c| c[:status] } ? 200 : 503
         response = [ResponseBuilder.new.call(check_statueses, json: !!path[:json])]
       end
 
