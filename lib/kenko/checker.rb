@@ -16,7 +16,7 @@ module Kenko
   private
 
     def check_status(check)
-      !!container[check].call
+      !!container.resolver(check)
     rescue StandardError
       false
     end

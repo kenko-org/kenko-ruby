@@ -14,7 +14,7 @@ RSpec.describe Kenko::Checker do
 
     it do
       expect(subject).to eq [
-        { name: :ok,  status: false },
+        { name: :ok,  status: true },
         { name: :bad, status: false },
         { name: :error, status: false }
       ]
@@ -26,7 +26,7 @@ RSpec.describe Kenko::Checker do
 
     it do
       expect(subject).to eq [
-        { name: :ok,  status: false },
+        { name: :ok,  status: true },
         { name: :bad, status: false }
       ]
     end
