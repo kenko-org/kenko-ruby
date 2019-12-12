@@ -1,29 +1,13 @@
 require 'json'
+require 'kenko/middleware/response_builder'
 
 module Kenko
   class Middleware
-    # TODO: tests
-    class ResponseBuilder
-      # TODO: allow to use text and json response (/health and /health.json)
-      def call(check_statueses, json: false)
-        json ? check_statueses.to_json : html_response(check_statueses)
-      end
+    attr_reader :container, :checks, :options, :health_check_path_regexp, :checker
 
-    private
-
-      def html_response(check_statueses)
-        check_statueses.map { |check| "#{human_status(check[:status])} - #{check[:name]}" }.join('<br>')
-      end
-
-      def human_status(status)
-        status ? 'OK' : 'WARN'
-      end
-    end
-
-    attr_reader :container, :checks, :options, :health_check_path_regexp
-
-    def initialize(app, path: '/health', container: Kenko::Container, checks: :all, **options)
+    def initialize(app, path: '/health', checks: :all, container: Kenko::Container, checker: Kenko::Checker.new, **options)
       @container = container
+      @checker = checker
       @checks = checks
       @options = options
       @app = app
@@ -37,7 +21,7 @@ module Kenko
       headers = Rack::Utils::HeaderHash.new(headers)
 
       # TODO: move it to DI
-      check_statueses = Kenko::Checker.new.call(checks: checks)
+      check_statueses = checker.call(checks: checks)
 
       if path = health_check_path?(req)
         response = [ResponseBuilder.new.call(check_statueses, json: !!path[:json])]
