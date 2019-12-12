@@ -2,7 +2,7 @@ require 'sinatra/base'
 require 'kenko'
 require 'kenko/middleware'
 
-Kenko::Container.register(:base) { true }
+Kenko::Container.register(:base) { :ok }
 Kenko::Container.register(:bad) { nil }
 
 class Web < Sinatra::Base
