@@ -1,7 +1,8 @@
+require 'concurrent'
+
 module Kenko
   class Container
-    # TODO: use mutex here
-    #       options: description for specific check
+    # TODO: options: description for specific check
     def self.register(check_name, &block)
       if key(check_name)
         raise Error, "There is already an item registered with the key #{check_name.inspect}"
@@ -24,7 +25,7 @@ module Kenko
     end
 
     def self.flush
-      @@container = {}
+      @@container = Concurrent::Hash.new
     end
 
   private
@@ -34,7 +35,7 @@ module Kenko
     end
 
     def self._container
-      @@container ||= {}
+      @@container ||= Concurrent::Hash.new
     end
   end
 end
