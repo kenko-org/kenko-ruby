@@ -25,6 +25,16 @@ Or install it yourself as:
 
     $ gem install kenko
 
+## Motivation
+
+[Health checks](https://microservices.io/patterns/observability/health-check-api.html) important thing for k8s and for understanding the current status of the server. Usually, ruby libraries have problems:
+
+1. Specific checks for the framework (only rails usually);
+2. Hard to add custom checks for project-specific logic (service communications or specific DB checks);
+3. Default rack check just checks nothing;
+
+That's why this library was born. It's a default core framework for creating health checks for specific libraries or frameworks like hanami, rails, siquel, mongoid, etc,
+
 ## Usage
 
 ### Base
@@ -67,6 +77,15 @@ SOON
 
 ### Roda
 SOON
+
+### How to add custom checks
+Just register a new check before start rack server:
+
+```ruby
+Kenko::Container.register(:good) { :ok }
+Kenko::Container.register(:bad) { nil }
+Kenko::Container.register(:servie) { Service.get(:ping).success? }
+```
 
 ## Development
 
